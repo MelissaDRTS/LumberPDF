@@ -1,0 +1,28 @@
+.THIS {
+    background-color: #333;
+    color: #fff;
+    max-height: 150px;
+
+}
+
+.THIS .phone {
+    color: rgba(248, 232, 4, 1);
+    font-size: 19px;
+}
+
+.THIS .link {
+    font-size: 19px;
+    color: rgba(248, 232, 4, 1);
+}
+
+.THIS .footer-link {
+    color: rgba(248, 232, 4, 1);
+}
+
+.THIS .ll-social-icons {
+    color: #fff;
+}
+
+.THIS .ll-social-icons:hover {
+    color: rgba(248, 232, 4, 1);
+}

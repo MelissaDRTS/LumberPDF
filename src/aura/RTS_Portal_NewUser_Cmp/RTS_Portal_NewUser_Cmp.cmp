@@ -1,0 +1,150 @@
+<aura:component controller="RTS_Portal_ManageUsers_Ctlr" implements="forceCommunity:availableForAllPageTypes" access="global" >
+    
+    <aura:attribute name="canCreateUser" type="Boolean" default="false"/>
+    <aura:attribute name="isInstaller" type="Boolean" default="false"/>
+    <aura:attribute name="loading" type="Boolean" default="false"/>
+    <aura:attribute name="isValid" type="boolean" default="false"/>
+    <aura:attribute name="errorMessage" type="String" default="Error with form."/>
+    <aura:attribute name="isOpen" type="boolean" default="false"/>
+    <aura:attribute name="specialtyOptions" type="List"/>
+    <aura:attribute name="addUser" type="boolean" default="false"/>
+    <aura:attribute name="userId" type="String"/>
+    
+    <aura:attribute name="storeOptions" type="List"/>
+    
+    <aura:handler name="init" value="{! this }" action="{! c.init }"/>
+    
+    
+    <aura:if isTrue="{!v.canCreateUser}">
+        <div class="new-user-button slds-m-top_large">
+            <lightning:button class="new-user-button"
+                              label="New User"
+                              title="New User"
+                              onclick="{! c.openModel }"
+                              iconName="utility:add" 
+                              iconPosition="right"/>
+        </div>
+        
+    </aura:if>
+    
+    
+    
+    <div class="slds-m-around_xx-large">
+        <!--Use aura:if tag to display Model Box, on the base of conditions. [isOpen boolean attribute] -->   
+        <aura:if isTrue="{!v.isOpen}">
+            <aura:if isTrue="{!v.loading}">
+                <lightning:spinner variant="brand" size="large" alternativeText="Loading"/>
+            </aura:if>
+            <!--###### MODAL BOX Start######--> 
+            <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+                <div class="slds-modal__container">
+                    <!-- ###### MODAL BOX HEADER Start ######-->
+                    <header class="slds-modal__header">
+                        <lightning:buttonIcon iconName="utility:close"
+                                              onclick="{! c.closeModel }"
+                                              alternativeText="close"
+                                              variant="bare-inverse"
+                                              class="slds-modal__close"/>
+                        <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">New User</h2>
+                    </header>
+                    <!--###### MODAL BOX BODY Part Start######-->
+                    <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                        <lightning:layout>
+                            <lightning:layoutItem flexibility="auto">
+                                <!-- CREATE NEW USER -->
+                                <div aria-labelledby="newUserForm">
+                                    <!-- CREATE NEW USER FORM -->
+                                    <form class="slds-form--stacked slds-grid slds-wrap" aura:id="userForm">
+                                        
+                                        
+                                        <lightning:input class="slds-col slds-size_8-of-12 slds-large-size_1-of-1" aura:id="new-first-name" name="FirstName" label="First Name" required="true"/>
+                                        <lightning:input class="slds-col slds-size_8-of-12 slds-large-size_1-of-1" aura:id="new-last-name" name="LastName" label="Last Name" required="true"/>
+                                        <lightning:input class="slds-col slds-size_8-of-12 slds-large-size_1-of-1" aura:id="new-email-address" type="email" name="email1" label="Email" required="true"/>
+                                        <lightning:input class="slds-col slds-size_8-of-12 slds-large-size_1-of-1" aura:id="new-confirmation-email-address" type="email" name="email2" label="Re-enter Email" required="true"/>
+                                        <lightning:input class="slds-col slds-size_8-of-12 slds-large-size_1-of-1" aura:id="new-phone-number" type="tel" label="Phone" name="phone" required="true"/>
+                                        
+                                        <aura:if isTrue="{!v.isInstaller}">
+                                            <div class="slds-col slds-size_1-of-1 slds-p-vertical_medium">
+                                                <lightning:helptext class="admin-help" content="Admin has job reassignment privileges"/>
+                                                <lightning:input type="toggle" label="Admin User" aura:id="new-user-admin" name="new-admin" messageToggleActive="Yes" messageToggleInactive="No"/>
+                                            </div>
+                                        </aura:if>
+                                        
+                                        
+                                        <div class="slds-col slds-large-size_1-of-1">
+                                            <lightning:dualListbox aura:id="new-user-stores"
+                                                                   name="storesSelect"  
+                                                                   label= "Assigned Stores" 
+                                                                   sourceLabel="Available" 
+                                                                   selectedLabel="Selected" 
+                                                                   options="{!v.storeOptions}" 
+                                                                   onchange=""
+                                                                   class="slds-m-vertical_small"
+                                                                   />
+                                        </div>
+                                        <div class="slds-col slds-large-size_1-of-1">
+                                            <lightning:dualListbox aura:id="new-user-specialties"
+                                                                   name="specialtySelect"  
+                                                                   label= "Specialties " 
+                                                                   sourceLabel="Available" 
+                                                                   selectedLabel="Selected" 
+                                                                   options="{!v.specialtyOptions}" 
+                                                                   onchange=""
+                                                                   class="slds-m-vertical_small"
+                                                                   />
+                                        </div>
+                                        
+                                        <div/>
+                                        <div class="slds-p-top_small slds-col slds-size_1-of-1">
+                                            <lightning:button variant="neutral"
+                                                              class="inverse-close-button"
+                                                              label="Close"
+                                                              title="Close"
+                                                              onclick="{! c.closeModel }"/>
+                                            <lightning:button class="save-button" 
+                                                              label="Save"
+                                                              title="Save"
+                                                              onclick="{! c.save }"/>
+                                        </div>
+                                        <div class="slds-p-top_small slds-col slds-size_1-of-1">
+                                            <aura:if isTrue="{!v.isValid}">
+                                                
+                                                <div class="slds-region_narrow slds-is-relative">
+                                                    <div class="slds-notify_container slds-is-absolute">
+                                                        <div class="slds-notify slds-notify_toast slds-theme_error" role="status">
+                                                            <div class="slds-notify__content">
+                                                                <h2 class="slds-text-heading_small">{!v.errorMessage}</h2>
+                                                                <aura:if isTrue="{!v.addUser}">
+                                                                    <lightning:button class="addUser-button" 
+                                                                                      label="Add User to Account"
+                                                                                      title="Add User"
+                                                                                      onclick="{! c.addUser }"/>
+                                                                    
+                                                                </aura:if>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                
+                                                
+                                            </aura:if>
+                                        </div>
+                                    </form>
+                                    <!-- / CREATE NEW USER FORM -->
+                                    
+                                </div>
+                                
+                            </lightning:layoutItem>
+                        </lightning:layout>
+                        
+                    </div>
+                    
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+            <!--###### MODAL BOX Part END Here ######-->
+            
+        </aura:if>
+    </div>
+    
+</aura:component>

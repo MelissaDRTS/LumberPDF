@@ -1,0 +1,52 @@
+<aura:component implements="forceCommunity:availableForAllPageTypes" access="global" >
+    
+    
+    <aura:attribute name="copyright" type="String" access="global" default="Copyright &copy; 2019 Lumber Liquidators, Inc. All Rights Reserved."/>
+    
+    <aura:attribute name="contactNumber" type="String" access="global" default="1-800-651-1635"/>
+    
+    
+    <div class="slds-align_absolute-center">
+        <div class="slds-grid slds-gutters slds-p-top_xx-large">
+            <div class="slds-col">
+                <a class="link" href="https://www.lumberliquidators.com/ll/flooring101" target="_blank">Flooring 101</a>
+            </div>
+            <div class="slds-col">
+                <a class="link" href="https://www.lumberliquidators.com/blog/video/" target="_blank">Flooring Videos</a>
+            </div>
+            
+            
+        </div>
+    </div>
+    
+    <div class="slds-align_absolute-center slds-p-top_large">
+        <p>Contact Us Today</p>
+    </div>
+    
+    <div class="slds-align_absolute-center">
+        <p class="phone">{!v.contactNumber}</p>
+    </div>
+    
+    <div class="slds-align_absolute-center slds-p-top_xx-large">
+        
+        
+        <div class="copyright slds-p-top_small">
+            <p class="slds-p-horizontal_small">{!v.copyright}</p>
+        </div>
+        
+        
+    </div>
+    
+    <div class="slds-align_absolute-center">
+        
+        <p class="slds-p-horizontal_small">Use of this site signifies your acceptance of Lumber Liquidators' <a class="footer-link" href="https://www.lumberliquidators.com/ll/customer-care/Terms" target="_blank">Terms and Conditions</a> and <a class="footer-link" href="https://www.lumberliquidators.com/ll/customer-care/Privacy" target="_blank">Privacy Policy</a>, 
+            <a class="footer-link" href="https://www.lumberliquidators.com/ll/customer-care/cookies" target="_blank">Cookie Statement</a>, and <a class="footer-link" href="https://www.lumberliquidators.com/ll/customer-care/ca-privacy" target="_blank">Your California Privacy Rights</a>.</p>
+        
+        
+        
+    </div>
+    
+    <div class="slds-align_absolute-center slds-p-vertical_xx-large trademark">
+        <p>LL Floors&trade; LL Flooring&trade;</p> 
+    </div>
+</aura:component>

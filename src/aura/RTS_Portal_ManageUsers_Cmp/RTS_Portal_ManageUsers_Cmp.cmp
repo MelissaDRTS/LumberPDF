@@ -1,0 +1,126 @@
+<aura:component controller="RTS_Portal_ManageUsersView_Ctlr" implements="forceCommunity:availableForAllPageTypes" access="global" >
+    <!-- attributes -->
+    
+    <aura:attribute name="data" type="Object" />
+    <aura:attribute name="loading" type="Boolean" default="false"/>
+    <aura:attribute name="userId" type="String"/> 
+    <aura:attribute name="loggedInUserId" type="String"/> 
+    
+    
+    <!-- handlers-->
+    <aura:handler name="init" value="{! this }" action="{! c.init }"/>
+    <aura:handler event="c:RTS_Portal_RefreshManageUsersView_CmpEvt" action="{!c.handleRefreshData}"/>
+    
+    <aura:if isTrue="{!v.loading}">
+        <lightning:spinner variant="brand" size="large"/>
+    </aura:if> 
+    
+    
+    
+    
+    <div class="slds-scrollable_x">
+        <div class="slds-p-vertical_large slds-clearfix">
+            <div class="slds-float_right">
+                
+                <lightning:icon iconName="utility:ribbon" size="small" variant="warning" alternativeText="User is Admin"/>
+                <span class="slds-p-left_x-small">Admin User</span>
+            </div>
+        </div>
+        
+        <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_striped slds-max-medium-table_stacked">
+            <thead>
+                
+                <tr class="slds-line-height_reset">
+                    <th class="" scope="col">
+                        <div class="slds-truncate" title="Name">Name</div>
+                    </th>
+                    <th class="" scope="col">
+                        <div class="slds-truncate" title="Email">Email</div>
+                    </th>
+                    <th class="" scope="col">
+                        <div class="slds-truncate" title="Phone">Phone</div>
+                    </th>
+                    <th class="" scope="col">
+                        <div class="slds-truncate" title="Stores">Stores</div>
+                    </th>
+                    <th class="" scope="col">
+                        <div class="slds-truncate" title="Specialities">Specialities</div>
+                    </th>
+                    <th class="" scope="col">
+                        <div class="slds-truncate" title="Active User">Active User</div>
+                    </th>
+                    
+                    <th class="" scope="col">
+                        <div class="slds-truncate" title="Edit User">Edit User</div>   
+                    </th>
+                </tr>
+                
+            </thead>
+            <tbody>
+                <aura:iteration items="{!v.data}" var="user"> 
+                    <tr class="slds-hint-parent">
+                        <th data-label="Name" scope="row">
+                            <div class="slds-truncate" title="{!user.managedUser.Name}">{!user.managedUser.Name}
+                                <aura:if isTrue="{!user.isAdmin}">
+                                    
+                                    <lightning:icon class="slds-p-left_x-small" iconName="utility:ribbon" size="small" variant="warning" alternativeText="User is Admin" />
+                                </aura:if>
+                            </div>
+                        </th>
+                        <td data-label="Email">
+                            <div class="slds-truncate" title="{!user.managedUser.Email}">{!user.managedUser.Email}</div>    
+                        </td>
+                        <th data-label="Phone" scope="row">
+                            <div class="slds-truncate" title="{!user.managedUser.Phone}">{!user.managedUser.Phone}</div>  
+                        </th>
+                        <td data-label="Stores">
+                          <aura:if isTrue="{!user.multipleStores}">
+                                
+                                    <div class="slds-truncate" title="{!user.assignedStores}">Multiple</div>
+                                
+                              <aura:set attribute="else">
+                                  <aura:iteration items="{!user.assignedStores}" var="store">
+                                    <div class="slds-truncate" title="{!store}">{!store}</div>
+                                </aura:iteration>
+                              </aura:set>
+                          </aura:if>
+                            
+                           
+                            
+                        </td>
+                        <td data-label="Specialities">
+                            <div class="slds-truncate" title="{!user.managedUser.Contact.Specialties__c}">{!user.managedUser.Contact.Specialties__c}</div>
+                        </td>
+                        
+                        <td data-label="Active User">
+                            <aura:if isTrue="{!user.managedUser.IsActive}">
+                                <div class="slds-truncate" title="Yes">Yes</div>
+                                <aura:set attribute="else">
+                                    <div class="slds-truncate" title="No">No</div>
+                                </aura:set>
+                            </aura:if>
+                            
+                        </td>
+                        <td data-label="Edit User">
+                            <lightning:buttonIcon value="{!user.managedUser.Id}" iconName="utility:edit" variant="bare" alternativeText="Edit User" size="small" onclick="{! c.handleEdit }"/>                                
+                        </td>
+                        
+                        
+                        
+                        
+                    </tr>
+                </aura:iteration> 
+            </tbody>
+        </table>
+        
+    </div>
+    
+    <c:RTS_Portal_EditUser_Cmp userId="{!v.userId}" allUsers="{!v.data}" loggedInUserId="{!v.loggedInUserId}"/>
+    
+    <aura:set attribute="else">
+        <div class="no-permission slds-align_absolute-center">
+            You do not have permission to view this page.
+        </div>
+    </aura:set>
+    
+</aura:component>

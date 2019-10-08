@@ -1,0 +1,161 @@
+<aura:component controller="RTS_Portal_ManageUsers_Ctlr" access="global" >
+    
+    <aura:attribute name="isAdmin" type="Boolean" default="false"/>
+    <aura:attribute name="userId" type="String"/>
+    <aura:attribute name="loggedInUserId" type="String"/>
+    <aura:attribute name="userUpdate" type="Boolean" default="false"/>
+    <aura:attribute name="isEditOpen" type="boolean" default="false"/>
+    <aura:attribute name="errorMessage" type="String" default="Error with form."/>
+    <aura:attribute name="isValid" type="boolean" default="false"/>
+    <aura:attribute name="isActive" type="boolean"/>
+    <aura:attribute name="editingInstaller" type="boolean"/>
+    <aura:attribute name="loading" type="Boolean" default="false"/>
+    <aura:attribute name="disable" type="Boolean" default="false"/>
+    <aura:attribute name="disablePicklists" type="Boolean" default="false"/>
+    <aura:attribute name="allUsers" type="Object"/>
+    <aura:attribute name="userContactId" type="String"/>
+    <aura:attribute name="userInfo" type="Object"/>
+    <aura:attribute name="specialtyOptions" type="List"/>
+    <aura:attribute name="selectedStores" type="List" default="[]"/>
+    <aura:attribute name="selectedSpecialties" type="List" default="[]"/>
+    <aura:attribute name="storeOptions" type="List"/>
+    
+    
+    <aura:handler name="change" value="{!v.userId}" action="{!c.renderForm}"/>
+    <aura:registerEvent name="refreshUsersListView" type="c:RTS_Portal_RefreshManageUsersView_CmpEvt"/>
+    
+    <div class="slds-m-around_xx-large">
+        <!--Use aura:if tag to display Model Box, on the base of conditions. [isOpen boolean attribute] -->   
+        <aura:if isTrue="{!v.isEditOpen}">
+            <aura:if isTrue="{!v.loading}">
+                <lightning:spinner variant="brand" size="large" alternativeText="Loading"/>
+            </aura:if>
+            <!--###### MODAL BOX Start######--> 
+            <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+                <div class="slds-modal__container">
+                    <!-- ###### MODAL BOX HEADER Start ######-->
+                    <header class="slds-modal__header">
+                        <lightning:buttonIcon iconName="utility:close"
+                                              onclick="{! c.closeModal }"
+                                              alternativeText="close"
+                                              variant="bare-inverse"
+                                              class="slds-modal__close"/>
+                        <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Edit User</h2>
+                    </header>
+                    <!--###### MODAL BOX BODY Part Start######-->
+                    <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                        <lightning:layout>
+                            <lightning:layoutItem flexibility="auto">
+                                <!-- EDIT USER -->
+                                <div aria-labelledby="editUserForm">
+                                    <!-- EDIT USER FORM -->
+                                    <form class="slds-form--stacked slds-grid slds-wrap">
+                                        <aura:if isTrue="{!v.isValid}">
+                                            <div class="demo-only" style="height: 4rem; width: 25rem;">
+                                                <div class="slds-region_narrow slds-is-relative">
+                                                    <div class="slds-notify_container slds-is-absolute">
+                                                        <div class="slds-notify slds-notify_toast slds-theme_error" role="status">
+                                                            <div class="slds-notify__content">
+                                                                <h2 class="slds-text-heading_small">{!v.errorMessage}</h2>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                        </aura:if>
+                                        <lightning:input class="slds-col slds-size_8-of-12 slds-large-size_1-of-1" aura:id="edit-first-name" name="FirstName" label="First Name" required="true" value="{! v.userInfo.managedUser.FirstName}"/>
+                                        <lightning:input class="slds-col slds-size_8-of-12 slds-large-size_1-of-1" aura:id="edit-last-name" name="LastName" label="Last Name" required="true" value="{!v.userInfo.managedUser.LastName}"/>
+                                        <lightning:input class="slds-col slds-size_8-of-12 slds-large-size_1-of-1" aura:id="edit-email-address" type="email" name="email" label="Email" required="true" value="{!v.userInfo.managedUser.Email}"/>
+                                        <lightning:input class="slds-col slds-size_8-of-12 slds-large-size_1-of-1" aura:id="edit-phone-number" type="tel" label="Phone" name="phone" required="true" value="{!v.userInfo.managedUser.Phone}"/>
+                                        
+                                        <div class="slds-col slds-large-size_1-of-1">
+                                            <lightning:dualListbox aura:id="edit-user-stores"
+                                                                   name="storesSelect"  
+                                                                   label= "Assigned Stores" 
+                                                                   sourceLabel="Available" 
+                                                                   selectedLabel="Selected" 
+                                                                   options="{!v.storeOptions}" 
+                                                                   value="{!v.selectedStores}"
+                                                                   onchange=""
+                                                                   class="slds-m-vertical_small"
+                                                                   disabled="{!v.disablePicklists}"
+                                                                   />
+                                        </div>
+                                        
+                                        <div class="slds-col slds-large-size_1-of-1">
+                                            <lightning:dualListbox aura:id="edit-user-specialities"
+                                                                   name="specialitySelect"  
+                                                                   label= "Specialities" 
+                                                                   sourceLabel="Available" 
+                                                                   selectedLabel="Selected" 
+                                                                   options="{!v.specialtyOptions}"
+                                                                   value="{!v.selectedSpecialties}"
+                                                                   onchange=""
+                                                                   class="slds-m-vertical_small"
+                                                                   disabled="{!v.disablePicklists}"
+                                                                   />
+                                        </div>
+                                        <aura:if isTrue="{!v.editingInstaller == false}">
+                                            <div class="slds-col slds-size_1-of-1 slds-p-vertical_medium">
+                                                
+                                                <lightning:helptext class="admin-help" content="Admin has job reassignment privileges. This can only be edited by an installer when a user is active."/>
+                                                
+                                                <lightning:input type="toggle" label="Admin User" aura:id="edit-admin" name="edit-admin" checked="{!v.userInfo.isAdmin}" messageToggleActive="Yes" messageToggleInactive="No" disabled="{!v.disable}"/>
+                                            </div>
+                                        </aura:if>
+                                        
+                                        <aura:if isTrue="{!v.userId != v.loggedInUserId }">
+                                            <div class="slds-col slds-size_1-of-1 slds-p-vertical_medium">
+                                                <lightning:input type="toggle" label="Active User" aura:id="edit-active-user" name="edit-active" checked="{!v.isActive}" messageToggleActive="Active" messageToggleInactive="Inactive" onclick="{! c.handleToggle}"/>
+                                            </div>
+                                        </aura:if>
+                                        
+                                        <div class="slds-col slds-size_1-of-1 slds-p-top_small">
+                                            <lightning:button variant="neutral"
+                                                              class="inverse-close-button"
+                                                              label="Close"
+                                                              title="Close"
+                                                              onclick="{! c.closeModal }"/>
+                                            <lightning:button class="save-button" 
+                                                              label="Update"
+                                                              title="Update User"
+                                                              onclick="{! c.save }"
+                                                              />
+                                        </div>
+                                        
+                                        
+                                        
+                                        <aura:if isTrue="{!v.isValid}">
+                                            <div class="demo-only" style="height: 4rem; width: 25rem;">
+                                                <div class="slds-region_narrow slds-is-relative">
+                                                    <div class="slds-notify_container slds-is-absolute">
+                                                        <div class="slds-notify slds-notify_toast slds-theme_error" role="status">
+                                                            <div class="slds-notify__content">
+                                                                <h2 class="slds-text-heading_small">{!v.errorMessage}</h2>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                        </aura:if>
+                                        
+                                    </form>
+                                    <!-- / EDIT USER FORM -->
+                                    
+                                </div>
+                                
+                            </lightning:layoutItem>
+                        </lightning:layout>
+                        
+                    </div>
+                    
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+            <!--###### MODAL BOX Part END Here ######-->
+            
+        </aura:if>
+    </div>
+</aura:component>

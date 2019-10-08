@@ -1,0 +1,94 @@
+<aura:component controller="RTS_Portal_ManageUsers_Ctlr" implements="forceCommunity:availableForAllPageTypes" access="global" >
+    <aura:attribute name="isInstaller" type="Boolean" default="false"/>
+    <aura:attribute name="loading" type="Boolean" default="false"/>
+    <aura:attribute name="isError" type="boolean" default="false"/>
+    <aura:attribute name="isVisible" type="boolean" default="false"/>
+    <aura:attribute name="errorMessage" type="String" default="Error with form."/>
+    <aura:attribute name="specialtyOptions" type="List"/>
+    <aura:attribute name="storeOptions" type="List"/>
+    <aura:attribute name="userId" type="String"/>
+    <aura:attribute name="userToReassign" type="Object"/>
+    
+    <aura:handler name="init" value="{! this }" action="{! c.init }"/> 
+    
+    
+    <aura:if isTrue="{!v.isVisible}">
+        <div class="slds-align_absolute-center slds-m-top_large">
+            <h1 class="pageHeading">Add User to Account</h1>
+        </div>
+        
+        <div class="slds-m-top_large">
+            <lightning:input aura:id="update-first-name" value="{!v.userToReassign.firstName}" name="FirstName" label="First Name" required="true"/>
+            <lightning:input aura:id="update-last-name" value="{!v.userToReassign.lastName}" name="LastName" label="Last Name" required="true"/>
+            <lightning:input aura:id="update-email-address" value="{!v.userToReassign.email}" type="email" name="email1" label="Email" required="true"/>
+            <lightning:input aura:id="update-phone-number" value="{!v.userToReassign.phoneNumber}" type="tel" label="Phone" name="phone" required="true"/>
+        </div>
+        <aura:if isTrue="{!v.isInstaller}">
+            <div class="slds-col slds-size_1-of-1 slds-p-vertical_medium">
+                <lightning:helptext class="admin-help" content="Admin has job reassignment privileges"/>
+                <lightning:input type="toggle" label="Admin User" aura:id="update-user-admin" checked="{!v.userToReassign.isSecondaryAdmin}" name="new-admin" messageToggleActive="Yes" messageToggleInactive="No"/>
+            </div>
+        </aura:if>
+        
+        
+        <div class="slds-col slds-large-size_1-of-1">
+            <lightning:dualListbox aura:id="update-user-stores"
+                                   name="storesSelect"  
+                                   label= "Assigned Stores" 
+                                   sourceLabel="Available" 
+                                   selectedLabel="Selected" 
+                                   options="{!v.storeOptions}" 
+                                   value="{!v.userToReassign.assignedStores}"
+                                   onchange=""
+                                   class="slds-m-vertical_small"
+                                   />
+        </div>
+        <div class="slds-col slds-large-size_1-of-1">
+            <lightning:dualListbox aura:id="update-user-specialties"
+                                   name="specialtySelect"  
+                                   label= "Specialties " 
+                                   sourceLabel="Available" 
+                                   selectedLabel="Selected" 
+                                   options="{!v.specialtyOptions}" 
+                                   value="{!v.userToReassign.specialties}"
+                                   onchange=""
+                                   class="slds-m-vertical_small"
+                                   />
+        </div>
+        
+        <div/>
+        <div class="slds-p-top_small slds-m-bottom_xx-large slds-col slds-size_1-of-1">
+            <lightning:button variant="neutral"
+                              class="inverse-close-button"
+                              label="Close"
+                              title="Close"
+                              onclick="{! c.closeModel }"/>
+            <lightning:button class="save-button" 
+                              label="Save"
+                              title="Save"
+                              onclick="{! c.save }"/>
+            
+            
+            <aura:if isTrue="{!v.isError}">
+            <div class="slds-region_narrow slds-is-relative slds-m-bottom_small">
+                <div class="slds-notify_container slds-is-absolute">
+                    <div class="slds-notify slds-notify_toast slds-theme_error" role="status">
+                        <div class="slds-notify__content">
+                            <h2 class="slds-text-heading_small">{!v.errorMessage}</h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </aura:if>
+        </div>
+        
+        
+        
+        <aura:set attribute="else">
+            <div class="invalid slds-align_absolute-center">
+                <h1 class="pageHeading">Invalid Page</h1>
+            </div>
+        </aura:set>
+    </aura:if>
+    
+</aura:component>

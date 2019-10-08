@@ -1,0 +1,4 @@
+<design:component>
+	<design:attribute name="copyright" label="Copyright Text"/>
+    <design:attribute name="contactNumber" label="Contact Phone Number"/>
+</design:component>

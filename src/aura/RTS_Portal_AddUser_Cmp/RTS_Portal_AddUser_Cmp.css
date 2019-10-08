@@ -1,0 +1,28 @@
+.THIS {
+}
+
+.THIS .new-user-button {
+    color: #000;
+    background-color: rgb(248, 232, 4);
+}
+
+.THIS button.inverse-close-button {
+    color: #000;
+}
+
+.THIS button.save-button {
+    color: #000;
+    background-color: rgb(248, 232, 4);
+}
+
+.THIS .admin-help {
+    background-color: #fff;
+}
+
+.THIS h1.pageHeading {
+    font-size: 20px;
+}
+
+.THIS.invalid {
+    height: 500px;
+}
